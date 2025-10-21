@@ -4,26 +4,18 @@ import { parseIP } from './iputil'
  * Looks up a domain using the native DNS resolver.
  * @param {string} domain - The domain to look up.
  * @returns {Promise<{
- *   addresses: {
- *     address: string;
- *     version: string;
- *   }[];
- *   tcpAddress: string | null;
+ *   resolvedAddress: string | null;
  * }>} - The result from the native DNS resolver.
  */
-export const doNativeLookup = async (domain) => {
+async function doNativeLookup(domain) {
   try {
     /**
      * @type {{
      *   error: string | null;
-     *   addresses: {
-     *     address: string;
-     *     version: string;
-     *   }[];
-     *   tcpAddress: string | null;
+     *   resolvedAddress: string | null;
      * }}
      */
-    const result = await browser.runtime.sendNativeMessage('ipvfoo_helper', {
+    const result = await browser.runtime.sendNativeMessage('', {
       cmd: 'lookup',
       domain,
     })
@@ -31,7 +23,7 @@ export const doNativeLookup = async (domain) => {
     VERBOSE5: console.log(
       'Native lookup result:',
       'domain=' + domain,
-      'tcpAddress=' + result.tcpAddress
+      'resolvedAddress=' + result.resolvedAddress
     )
 
     if (result.error) {
@@ -47,13 +39,13 @@ export const doNativeLookup = async (domain) => {
       'domain',
       domain
     )
-    // This seems to be an issue with how the Native App resolves
-    // Apparently it blocks localhost lookups
+    
+    // Fallback: Native app blocks some lookups (e.g. localhost)
+    // If domain is already an IP address, return it directly
     try {
-      // check if the domain is an IP address
-      // for ipv6 that means it has [] brackets
-      // parseIP does not handle IPs given with []
       let cleanDomain = domain
+      
+      // Remove IPv6 brackets if present
       if (
         typeof domain === 'string' &&
         domain.startsWith('[') &&
@@ -61,129 +53,119 @@ export const doNativeLookup = async (domain) => {
       ) {
         cleanDomain = domain.slice(1, -1)
       }
-      // Check if it's a valid IPv4 or IPv6 address using parseIP
+      
+      // Validate it's a real IP address
       try {
-        const packed = parseIP(cleanDomain)
-        // parseIP returns 8 hex digits for IPv4, 32 hex digits for IPv6
-        const isIPv6 = packed.length === 32
+        parseIP(cleanDomain)
         VERBOSE3: console.log(
-          'Got error when looking up domain that is an IP address: ',
-          domain,
-          'returning as best effort'
-        )
-        return {
-          addresses: [
-            {
-              address: domain,
-              version: isIPv6 ? 'IPv6' : 'IPv4',
-            },
-          ],
-          tcpAddress: domain,
-        }
-      } catch (e) {
-        // Not a valid IP address
-        VERBOSE3: console.log(
-          'Got error when looking up domain that is an invalid IP address and could not be parsed: ',
+          'Domain is already an IP address, returning as-is:',
           domain
         )
+        return {
+          resolvedAddress: domain,
+        }
+      } catch (e) {
+        VERBOSE3: console.log('Lookup failed for non-IP domain:', domain)
         return null
       }
     } catch {
-      VERBOSE3: console.log(
-        'Got error when looking up domain that is not an IP address: ',
-        domain
-      )
+      VERBOSE3: console.log('Unexpected error handling domain:', domain)
       return null
     }
   }
 }
-// Cache IPv6 connectivity status to avoid repeated checks
-let ipv6ConnectivityCache = {
-  hasIPv6: null,
-  lastCheck: 0,
-  checkInterval: 5 * 60 * 1000, // 5 minutes
-}
 
-const checkIPv6Connectivity = async () => {
-  const now = Date.now()
+// DNS caching and deduplication
+// ================================
+// When a page loads, multiple requests to the same domain arrive simultaneously.
+// Without caching/deduplication, each triggers a separate native DNS lookup.
+//
+// Two-layer strategy:
+// 1. inflightLookups: Deduplicate concurrent requests for same domain
+//    - First request starts lookup, subsequent requests wait for same promise
+// 2. dnsCache: Cache completed lookups for 10 seconds
+//    - Avoid repeated lookups when browsing same site
+//
+// Technically, the cache is not necessary because these requests
+// are so close together, its extremely likely they will hit
+// system DNS cache. This is simply a performance optimization
+// to avoid making repeated requests to the native app. 
+// Which have a very tiny latency associated with them.
 
-  // Return cached result if recent
-  if (
-    ipv6ConnectivityCache.hasIPv6 !== null &&
-    now - ipv6ConnectivityCache.lastCheck < ipv6ConnectivityCache.checkInterval
-  ) {
-    return ipv6ConnectivityCache.hasIPv6
-  }
-
-  try {
-    // Test IPv6 connectivity by trying to reach Google's IPv6-only test endpoint
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 1000)
-
-    const response = await fetch('https://ipv6.google.com/', {
-      method: 'HEAD',
-      signal: controller.signal,
-    })
-
-    clearTimeout(timeoutId)
-    ipv6ConnectivityCache.hasIPv6 = response.ok
-  } catch (error) {
-    // If the request fails, assume no IPv6 connectivity
-    ipv6ConnectivityCache.hasIPv6 = false
-  }
-
-  ipv6ConnectivityCache.lastCheck = now
-  VERBOSE1: console.log(
-    'IPv6 connectivity check:',
-    ipv6ConnectivityCache.hasIPv6
-  )
-  return ipv6ConnectivityCache.hasIPv6
-}
-
-// Simple in-memory DNS cache to debounce rapid lookups
+/** @type {Map<string, {ip: string, timestamp: number}>} */
 const dnsCache = new Map()
 const DNS_CACHE_TTL = 10 * 1000 // 10 seconds
 
-// Periodically clean up expired cache entries
+/** @type {Map<string, Promise<string>>} */
+const inflightLookups = new Map()
+
+// Clean up expired cache entries every 10 seconds
 setInterval(() => {
   const now = Date.now()
   for (const [key, entry] of dnsCache.entries()) {
     if (now - entry.timestamp >= DNS_CACHE_TTL) {
       dnsCache.delete(key)
-      VERBOSE3: console.log('DOH cache entry expired for', key)
+      VERBOSE3: console.log('DNS cache entry expired for', key)
     }
   }
 }, DNS_CACHE_TTL)
 
 /**
- * Looks up a domain using DNS over HTTPS (DoH) with in-memory caching.
+ * Resolves a domain to an IP address using native DNS with caching and deduplication.
+ * 
  * @param {string} domain - The domain to look up.
  * @returns {Promise<string>} - The resolved IP address.
  */
-export const lookupDomainNative = async (domain) => {
+export async function resolveDomainViaNativeWithCache(domain) {
   const now = Date.now()
-  // Check cache first
+  
+  // Check cached result first
   const cacheEntry = dnsCache.get(domain)
   if (cacheEntry && now - cacheEntry.timestamp < DNS_CACHE_TTL) {
     VERBOSE3: console.log('cache hit for', domain)
     return cacheEntry.ip
   }
 
-  const addresses = await doNativeLookup(domain)
-
-  let address = addresses?.tcpAddress ?? null
-
-  if (address) {
-    dnsCache.set(domain, {
-      ip: address,
-      timestamp: Date.now(),
-    })
-    VERBOSE3: console.log(
-      'result cached for',
-      'domain=' + domain,
-      'address=' + address
-    )
+  // Check if lookup already in progress for this domain
+  const inflightPromise = inflightLookups.get(domain)
+  if (inflightPromise) {
+    VERBOSE3: console.log('in-flight lookup already in progress for', domain)
+    return inflightPromise
   }
 
-  return address
+  // Start new lookup and track it to deduplicate parallel requests
+  const lookupPromise = performLookup(domain)
+  inflightLookups.set(domain, lookupPromise)
+  return lookupPromise
+}
+
+/**
+ * Performs the actual DNS lookup and caches the result.
+ * Cleans up in-flight tracking when complete.
+ * 
+ * @param {string} domain - The domain to look up.
+ * @returns {Promise<string>} - The resolved IP address.
+ */
+async function performLookup(domain) {
+  try {
+    const result = await doNativeLookup(domain)
+    const address = result?.resolvedAddress ?? null
+
+    if (address) {
+      dnsCache.set(domain, {
+        ip: address,
+        timestamp: Date.now(),
+      })
+      VERBOSE3: console.log(
+        'result cached for',
+        'domain=' + domain,
+        'address=' + address
+      )
+    }
+
+    return address
+  } finally {
+    // Remove from in-flight tracking when done (success or failure)
+    inflightLookups.delete(domain)
+  }
 }

@@ -13,24 +13,24 @@ import {
   IP4_CHARS,
   IP6_CHARS,
   IPV4_ONLY_DOMAINS,
+  IS_MOBILE,
+  isFirefox,
+  isSafari,
   NAT64_KEY,
   newMap,
   options,
   optionsReady,
+  reformatForNAT64,
   REGULAR_COLOR,
   setColorIsDarkMode,
+  sleep,
   spriteImg,
   spriteImgReady,
-  watchOptions,
-  sleep,
-  IS_MOBILE,
-  reformatForNAT64,
-  isFirefox,
-  isSafari
+  watchOptions
 } from "./lib/common.js";
 
-import { lookupDomainNative } from "./lib/safari.js";
 import { parseIP } from "lib/iputil.js";
+import { resolveDomainViaNativeWithCache } from "./lib/safari.js";
 
 /*
 Copyright (C) 2011  Paul Marks  http://www.pmarks.net/
@@ -1243,7 +1243,7 @@ chrome.webRequest.onResponseStarted.addListener(
   // likely due to Apple's stance on privacy
   // https://github.com/pmarks-net/ipvfoo/issues/39
   if (!addr && isSafari) {
-    addr = await lookupDomainNative(parsed.domain);
+    addr = await resolveDomainViaNativeWithCache(parsed.domain);
     VERBOSE3: console.log(
       "wR.oRS", details?.tabId, details?.requestId, parsed.domain, addr, "type", details.type);
     
