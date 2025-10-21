@@ -61,7 +61,6 @@
 		B2C2F7EE2EA2ACB90051EEFB /* ipvfoo-safari Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "ipvfoo-safari Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2C2F7F82EA2ACB90051EEFB /* ipvfoo-safari Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "ipvfoo-safari Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2C2F9032EA2ACB90051EEFB /* SafariResolverTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SafariResolverTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		B2C2F9042EA2ACB90051EEFB /* SafariResolverTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SafariResolverTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -114,26 +113,26 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				DNSResolver.swift,
-				Resources/popup.js,
-				Resources/popup.html,
-				Resources/options.html,
-				Resources/manifest.json,
-				Resources/detectdarkmode.js,
-				Resources/detectdarkmode.html,
-				Resources/background.js,
-				Resources/assets/websocket.png,
-				Resources/assets/sprites32.png,
-				Resources/assets/sprites16.png,
-				Resources/assets/snip.png,
-				Resources/assets/serviceworker.png,
-				Resources/assets/icon16.png,
-				Resources/assets/icon16_transparent.png,
-				Resources/assets/icon128.png,
-				Resources/assets/gray_unlock.png,
-				Resources/assets/gray_schrodingers_lock.png,
-				Resources/assets/gray_lock.png,
-				Resources/assets/cached_arrow.png,
 				Resources/assets/1x1_808080.png,
+				Resources/assets/cached_arrow.png,
+				Resources/assets/gray_lock.png,
+				Resources/assets/gray_schrodingers_lock.png,
+				Resources/assets/gray_unlock.png,
+				Resources/assets/icon16_transparent.png,
+				Resources/assets/icon16.png,
+				Resources/assets/icon128.png,
+				Resources/assets/serviceworker.png,
+				Resources/assets/snip.png,
+				Resources/assets/sprites16.png,
+				Resources/assets/sprites32.png,
+				Resources/assets/websocket.png,
+				Resources/background.js,
+				Resources/detectdarkmode.html,
+				Resources/detectdarkmode.js,
+				Resources/manifest.json,
+				Resources/options.html,
+				Resources/popup.html,
+				Resources/popup.js,
 				SafariWebExtensionHandler.swift,
 			);
 			target = B2C2F7ED2EA2ACB90051EEFB /* ipvfoo-safari Extension (iOS) */;
@@ -142,26 +141,26 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				DNSResolver.swift,
-				Resources/popup.js,
-				Resources/popup.html,
-				Resources/options.html,
-				Resources/manifest.json,
-				Resources/detectdarkmode.js,
-				Resources/detectdarkmode.html,
-				Resources/background.js,
-				Resources/assets/websocket.png,
-				Resources/assets/sprites32.png,
-				Resources/assets/sprites16.png,
-				Resources/assets/snip.png,
-				Resources/assets/serviceworker.png,
-				Resources/assets/icon16.png,
-				Resources/assets/icon16_transparent.png,
-				Resources/assets/icon128.png,
-				Resources/assets/gray_unlock.png,
-				Resources/assets/gray_schrodingers_lock.png,
-				Resources/assets/gray_lock.png,
-				Resources/assets/cached_arrow.png,
 				Resources/assets/1x1_808080.png,
+				Resources/assets/cached_arrow.png,
+				Resources/assets/gray_lock.png,
+				Resources/assets/gray_schrodingers_lock.png,
+				Resources/assets/gray_unlock.png,
+				Resources/assets/icon16_transparent.png,
+				Resources/assets/icon16.png,
+				Resources/assets/icon128.png,
+				Resources/assets/serviceworker.png,
+				Resources/assets/snip.png,
+				Resources/assets/sprites16.png,
+				Resources/assets/sprites32.png,
+				Resources/assets/websocket.png,
+				Resources/background.js,
+				Resources/detectdarkmode.html,
+				Resources/detectdarkmode.js,
+				Resources/manifest.json,
+				Resources/options.html,
+				Resources/popup.html,
+				Resources/popup.js,
 				SafariWebExtensionHandler.swift,
 			);
 			target = B2C2F7F72EA2ACB90051EEFB /* ipvfoo-safari Extension (macOS) */;
@@ -261,7 +260,6 @@
 				B2C2F7E42EA2ACB90051EEFB /* macOS (App) */,
 				B2C2F7F22EA2ACB90051EEFB /* iOS (Extension) */,
 				B2C2F7FC2EA2ACB90051EEFB /* macOS (Extension) */,
-				B2C2F9052EA2ACB90051EEFB /* SafariResolverTests */,
 				B2C2F7D22EA2ACB90051EEFB /* Products */,
 			);
 			sourceTree = "<group>";
@@ -276,14 +274,6 @@
 				B2C2F9032EA2ACB90051EEFB /* SafariResolverTests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		B2C2F9052EA2ACB90051EEFB /* SafariResolverTests */ = {
-			isa = PBXGroup;
-			children = (
-				B2C2F9042EA2ACB90051EEFB /* SafariResolverTests.swift */,
-			);
-			path = SafariResolverTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
