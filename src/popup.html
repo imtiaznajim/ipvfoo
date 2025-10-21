@@ -26,6 +26,11 @@ body {
   background-color: #fff;
   color: #000;
 }
+body.safari {
+  overflow: auto;
+  max-height: 600px;
+  color-scheme: light dark;
+}
 /* We want copy-paste to keep the domain in the first column,
    so this draws a vertical line to fake the "zeroth" column. */
 table {
@@ -136,6 +141,10 @@ img::selection {
 /* dark mode */
 @media (prefers-color-scheme: dark) {
   body {
+    background-color: #222;
+    color: #eee;
+  }
+  body.safari {
     background-color: #222;
     color: #eee;
   }

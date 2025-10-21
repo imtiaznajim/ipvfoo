@@ -1,3 +1,11 @@
+import tableBgUrl from "./assets/1x1_808080.png";
+import cachedArrowUrl from "./assets/cached_arrow.png";
+import grayLockUrl from "./assets/gray_lock.png";
+import graySchrodingersLockUrl from "./assets/gray_schrodingers_lock.png";
+import grayUnlockUrl from "./assets/gray_unlock.png";
+import serviceworkerUrl from "./assets/serviceworker.png";
+import snipUrl from "./assets/snip.png";
+import websocketUrl from "./assets/websocket.png";
 import {
   addEventListenersForFirefoxLinks,
   buildIcon,
@@ -14,14 +22,6 @@ import {
   setColorIsDarkMode,
   spriteImgReady
 } from "./lib/common.js";
-import graySchrodingersLockUrl from "./assets/gray_schrodingers_lock.png";
-import grayLockUrl from "./assets/gray_lock.png";
-import grayUnlockUrl from "./assets/gray_unlock.png";
-import websocketUrl from "./assets/websocket.png";
-import serviceworkerUrl from "./assets/serviceworker.png";
-import cachedArrowUrl from "./assets/cached_arrow.png";
-import snipUrl from "./assets/snip.png";
-import tableBgUrl from "./assets/1x1_808080.png";
 
 const ALL_URLS = '<all_urls>'
 
@@ -44,6 +44,9 @@ window.onload = async function() {
   // Set table background image from inlined PNG
   table.style.backgroundImage = `url("${tableBgUrl}")`;
   addEventListenersForFirefoxLinks(document.body);
+  if (isSafari) {
+    document.body.classList.add("safari");
+  }
   await beg();
   if (IS_MOBILE) {
     document.getElementById("mobile_footer").style.display = "flex";
