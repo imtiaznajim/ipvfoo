@@ -27,9 +27,13 @@ body {
   color: #000;
 }
 body.safari {
-  overflow: auto;
-  max-height: 600px;
   color-scheme: light dark;
+}
+body.safari .safari-scroll-wrapper {
+  max-height: 600px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 /* We want copy-paste to keep the domain in the first column,
    so this draws a vertical line to fake the "zeroth" column. */
@@ -87,6 +91,10 @@ img::selection {
   display: inline-block;
   float: left;
   padding: 6px;
+}
+body.safari .safari-scroll-wrapper .border {
+  display: block;
+  float: none;
 }
 
 .snippedTextInvisible {

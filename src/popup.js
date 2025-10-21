@@ -46,6 +46,13 @@ window.onload = async function() {
   addEventListenersForFirefoxLinks(document.body);
   if (isSafari) {
     document.body.classList.add("safari");
+    // Wrap content in scrollable div for Safari
+    const wrapper = document.createElement("div");
+    wrapper.className = "safari-scroll-wrapper";
+    while (document.body.firstChild) {
+      wrapper.appendChild(document.body.firstChild);
+    }
+    document.body.appendChild(wrapper);
   }
   await beg();
   if (IS_MOBILE) {
@@ -216,7 +223,7 @@ function scrollbarHack() {
   }
   setTimeout(() => {
     const e = document.documentElement;
-    if (e.scrollHeight > e.clientHeight) {
+    if (e.scrollHeight > e.clientHeight && !isSafari) {
       document.body.style.paddingRight = '20px';
     } else if (!redrawn) {
       document.body.classList.toggle('force-redraw');
