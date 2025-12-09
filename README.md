@@ -51,5 +51,5 @@ The `use_*_manifest.sh.bat` scripts in the [manifest](src/manifest/) directory m
 <br><br><br>
 Donate: https://liberapay.com/pmarks
 <br><br><br>
-Orginial Author: https://liberapay.com/pmarks](https://github.com/agoodkind/ipvfoo
+Orginial Author: https://github.com/agoodkind/ipvfoo
 
