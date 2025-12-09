@@ -16,56 +16,69 @@ limitations under the License.
 
 "use strict";
 
-// Requires <script src="iputil.js">
+import {formatIPv6, parseIP} from "./iputil.js";
+import sprites16Url from "../assets/sprites16.png";
+import sprites32Url from "../assets/sprites32.png";
 
-const IS_MOBILE = /\bMobile\b/.test(navigator.userAgent);
+export {formatIPv6};
+
+export const IS_MOBILE = /\bMobile\b/.test(navigator.userAgent);
 
 // Flags are bitwise-OR'd across all connections to a domain.
-const FLAG_SSL = 0x1;
-const FLAG_NOSSL = 0x2;
-const FLAG_UNCACHED = 0x4;
-const FLAG_CONNECTED = 0x8;
-const FLAG_WEBSOCKET = 0x10;
-const FLAG_NOTWORKER = 0x20;  // from a tab, not a service worker
+export const FLAG_SSL = 0x1;
+export const FLAG_NOSSL = 0x2;
+export const FLAG_UNCACHED = 0x4;
+export const FLAG_CONNECTED = 0x8;
+export const FLAG_WEBSOCKET = 0x10;
+export const FLAG_NOTWORKER = 0x20;  // from a tab, not a service worker
 
-const IPV4_ONLY_DOMAINS = new Set(["ipv4.google.com", "ipv4.icanhazip.com", "ipv4.whatismyip.akamai.com"]);
+export const IPV4_ONLY_DOMAINS = new Set(["ipv4.google.com", "ipv4.icanhazip.com", "ipv4.whatismyip.akamai.com"]);
+
+const isSafari = (typeof webkitURL !== 'undefined');
+// Once Chrome adds support for browser.* this needs to be updated
+// https://issues.chromium.org/issues/40556351
+const isFirefox = (typeof browser !== 'undefined' && !isSafari);
+
+export { isSafari, isFirefox };
 
 // Returns an Object with no default properties.
-function newMap() {
+export function newMap() {
   return Object.create(null);
 }
 
-function clearMap(m) {
+export function clearMap(m) {
   for (const k of Object.keys(m)) {
     delete m[k];
   }
 }
 
-function sleep(ms) {
+export function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function removeChildren(n) {
+export function removeChildren(n) {
   while (n.hasChildNodes()) {
     n.removeChild(n.lastChild);
   }
   return n;
 }
 
-const spriteImg = {ready: false};
-const spriteImgReady = (async function() {
+export const spriteImg = {ready: false};
+export const spriteImgReady = (async function() {
+  const spriteUrls = {
+    16: sprites16Url,
+    32: sprites32Url
+  };
+  
   for (const size of [16, 32]) {
-    const url = chrome.runtime.getURL(`sprites${size}.png`);
+    const url = spriteUrls[size];
     try {
       const response = await fetch(url);
       const blob = await response.blob();
       spriteImg[size] = await createImageBitmap(blob);
     } catch (err) {
-      // Why does this sometimes fail?  My best guess is that running
-      // the unpacked extension from a ChromeOS Linux container exposes
-      // it to filesystem reliability issues. If this happens in the wild,
-      // maybe consider base64-inlining the PNGs?
-      console.error(`failed to fetch ${url}: ${err}`);
+      // Inlined PNGs should not fail, but handle gracefully
+      console.error(`failed to load sprite ${size}: ${err}`);
       spriteImg[size] = redFailImg();
     }
   }
@@ -130,7 +143,7 @@ const targetSmall2 = {
 // pattern is 0..3 characters, each '4', '6', or '?'.
 // size is 16 or 32.
 // color is "lightfg" or "darkfg".
-function buildIcon(pattern, size, color) {
+export function buildIcon(pattern, size, color) {
   if (!spriteImg.ready) throw "must await spriteImgReady!";
   const ctx = _getCanvasContext(size);
   ctx.clearRect(0, 0, size, size);
@@ -166,10 +179,10 @@ function drawSprite(ctx, size, targets, sources) {
                 target[0], target[1], source[2], source[3]);
 }
 
-const REGULAR_COLOR = "regularColorScheme";
-const INCOGNITO_COLOR = "incognitoColorScheme";
+export const REGULAR_COLOR = "regularColorScheme";
+export const INCOGNITO_COLOR = "incognitoColorScheme";
 
-const NAT64_KEY = "nat64/";
+export const NAT64_KEY = "nat64/";
 const NAT64_VALIDATE = /^nat64\/[0-9a-f]{24}$/;
 const NAT64_DEFAULTS = new Set([
   parseIP("::ffff:0:0").slice(0, 96/4),  // For stupid AAAA records
@@ -177,14 +190,15 @@ const NAT64_DEFAULTS = new Set([
   parseIP("64:ff9b:1::").slice(0, 96/4), // RFC 8215
 ]);
 
+/** @type {((keys: string[]) => void) | null} */
 let _watchOptionsFunc = null;
-const options = {
+export const options = {
   ready: false,
   [REGULAR_COLOR]: "darkfg",  // default immediately replaced
   [INCOGNITO_COLOR]: "lightfg",
   [NAT64_KEY]: new Set(NAT64_DEFAULTS),
 };
-const optionsReady = (async function() {
+export const optionsReady = (async function() {
   const [localItems, syncItems] = await Promise.all(
       [chrome.storage.local.get(), chrome.storage.sync.get()]);
   for (const [option, value] of Object.entries(localItems)) {
@@ -242,7 +256,7 @@ chrome.storage.sync.onChanged.addListener(function(changes) {
   }
 });
 
-function watchOptions(f) {
+export function watchOptions(f) {
   if (_watchOptionsFunc) throw "redundant watchOptions!";
   _watchOptionsFunc = f;
   if (options.ready) {
@@ -250,9 +264,9 @@ function watchOptions(f) {
   }
 }
 
-function setColorIsDarkMode(option, isDarkMode) {
+export function setColorIsDarkMode(option, isDarkMode) {
   if (!(option == REGULAR_COLOR || option == INCOGNITO_COLOR)) {
-    throw new Error("invalid color scheme", option);
+    throw new Error(`invalid color scheme: ${String(option)}`);
   }
   if (IS_MOBILE && option == INCOGNITO_COLOR) {
     // Firefox for Android, the incognito popup follows the system theme
@@ -269,7 +283,7 @@ function setColorIsDarkMode(option, isDarkMode) {
 }
 
 // Users can manually call this function to add a NAT64 prefix from the console.
-function addNAT64(ip) {
+export function addNAT64(ip) {
   if (ip.endsWith("/96")) {
     ip = ip.slice(0, ip.length-3);
   }
@@ -278,7 +292,7 @@ function addNAT64(ip) {
   return `Added NAT64 prefix ${formatIPv6(packed96)}/96`;
 }
 
-function addPackedNAT64(packed96) {
+export function addPackedNAT64(packed96) {
   if (options[NAT64_KEY].has(packed96)) {
     return;
   }
@@ -291,7 +305,7 @@ function addPackedNAT64(packed96) {
   _watchOptionsFunc?.([NAT64_KEY]);
 }
 
-function revertNAT64() {
+export function revertNAT64() {
   let toRemove = [];
   for (const prefix96 of options[NAT64_KEY].keys()) {
     if (!NAT64_DEFAULTS.has(prefix96)) {
@@ -305,4 +319,42 @@ function revertNAT64() {
     // our local Set is used for deduplication.
     _watchOptionsFunc?.([NAT64_KEY]);
   }
+}
+
+export function addEventListenersForFirefoxLinks(root) {
+  if (typeof browser == "undefined") {
+    return;
+  }
+  const clickHandler = function(e) {
+    if (e.target.tagName == "A" && (e.ctrlKey || e.metaKey || e.shiftKey)) {
+      window.open(e.target.href);
+      e.preventDefault();
+    }
+  };
+  const auxClickHandler = function(e) {
+    if (e.target.tagName == "A" && e.button == 1) {
+      window.open(e.target.href);
+      e.preventDefault();
+    }
+  };
+  root.addEventListener("click", clickHandler);
+  root.addEventListener("auxclick", auxClickHandler);
+}
+
+export const IP4_CHARS = /^[0-9.]+$/;
+export const IP6_CHARS = /^[0-9A-Fa-f]*:[0-9A-Fa-f:.]*$/;
+export const DNS_CHARS = /^[0-9A-Za-z._-]+$/;
+
+export function reformatForNAT64(addr, doLookup = true) {
+  let packed128 = "";
+  try {
+    packed128 = parseIP(addr);
+  } catch {
+    return addr;
+  }
+  if (packed128.length != 128/4) {
+    return addr;
+  }
+  const isNAT64 = doLookup && options[NAT64_KEY].has(packed128.slice(0, 96/4));
+  return formatIPv6(packed128, /*with_dots=*/isNAT64);
 }

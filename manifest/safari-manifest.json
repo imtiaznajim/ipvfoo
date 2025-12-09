@@ -9,23 +9,9 @@
     "128": "icon128.png"
   },
   "background": {
-    "scripts": ["iputil.js", "common.js", "background.js"]
-  },
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "ipvfoo@pmarks.net",
-      "strict_min_version": "115.0"
-    },
-    "gecko_android": {
-      "strict_min_version": "120.0"
-    }
+    "scripts": ["background.js"]
   },
   "action": {
-    "default_icon": {
-      "16": "icon16_transparent.png"
-    }
-  },
-  "page_action": {
     "default_icon": {
       "16": "icon16_transparent.png"
     }
@@ -38,7 +24,9 @@
     "contextMenus",
     "storage",
     "webNavigation",
-    "webRequest"
+    "webRequest",
+    "nativeMessaging",
+    "tabs"
   ],
   "host_permissions": [
     "<all_urls>"

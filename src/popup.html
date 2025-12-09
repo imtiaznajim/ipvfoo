@@ -26,10 +26,18 @@ body {
   background-color: #fff;
   color: #000;
 }
+body.safari {
+  color-scheme: light dark;
+}
+body.safari .safari-scroll-wrapper {
+  max-height: 600px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
 /* We want copy-paste to keep the domain in the first column,
    so this draws a vertical line to fake the "zeroth" column. */
 table {
-  background-image: url("1x1_808080.png");
   background-position: top 0px left 23px;
   background-repeat: repeat-y;
 }
@@ -83,6 +91,10 @@ img::selection {
   display: inline-block;
   float: left;
   padding: 6px;
+}
+body.safari .safari-scroll-wrapper .border {
+  display: block;
+  float: none;
 }
 
 .snippedTextInvisible {
@@ -140,6 +152,10 @@ img::selection {
     background-color: #222;
     color: #eee;
   }
+  body.safari {
+    background-color: #222;
+    color: #eee;
+  }
   .sslImg {
     filter: invert(1);
   }
@@ -183,9 +199,7 @@ img::selection {
 }
 
 </style>
-<script type="text/javascript" src="iputil.js"></script>
-<script type="text/javascript" src="common.js"></script>
-<script type="text/javascript" src="popup.js"></script>
+<script type="module" src="popup.js"></script>
 </head>
 <body>
 <div class="border">

@@ -1,3 +1,37 @@
+import {
+  addPackedNAT64,
+  buildIcon,
+  clearMap,
+  DNS_CHARS,
+  FLAG_CONNECTED,
+  FLAG_NOSSL,
+  FLAG_NOTWORKER,
+  FLAG_SSL,
+  FLAG_UNCACHED,
+  FLAG_WEBSOCKET,
+  INCOGNITO_COLOR,
+  IP4_CHARS,
+  IP6_CHARS,
+  IPV4_ONLY_DOMAINS,
+  IS_MOBILE,
+  isFirefox,
+  isSafari,
+  NAT64_KEY,
+  newMap,
+  options,
+  optionsReady,
+  reformatForNAT64,
+  REGULAR_COLOR,
+  setColorIsDarkMode,
+  sleep,
+  spriteImg,
+  spriteImgReady,
+  watchOptions
+} from "./lib/common.js";
+
+import { parseIP } from "lib/iputil.js";
+import { resolveDomainViaNativeWithCache } from "./lib/safari.js";
+
 /*
 Copyright (C) 2011  Paul Marks  http://www.pmarks.net/
 
@@ -37,12 +71,6 @@ user can demand a popup before any IP addresses are available.
 
 "use strict";
 
-if (chrome.runtime.getManifest().background.service_worker) {
-  // This only runs on Chrome.
-  // Firefox uses manifest.json/background/scripts instead.
-  importScripts("iputil.js", "common.js");
-}
-
 // Possible states for an instance of TabInfo.
 // We begin at BIRTH, and only ever move forward, not backward.
 const TAB_BIRTH = 0;    // Waiting for makeAlive() or remove()
@@ -52,12 +80,6 @@ const TAB_DEAD = 2;
 // RequestFilter for webRequest events.
 const FILTER_ALL_URLS = { urls: ["<all_urls>"] };
 
-// Distinguish IP address and domain name characters.
-// Note that IP6_CHARS must not match "beef.de"
-const IP4_CHARS = /^[0-9.]+$/;
-const IP6_CHARS = /^[0-9A-Fa-f]*:[0-9A-Fa-f:.]*$/;
-const DNS_CHARS = /^[0-9A-Za-z._-]+$/;
-
 const SECONDS = 1000;  // to milliseconds
 
 const NAME_VERSION = (() => {
@@ -65,10 +87,47 @@ const NAME_VERSION = (() => {
   return `${m.name} v${m.version}`;
 })();
 
-let debug = false;
-function debugLog() {
-  if (debug) {
-    console.log(new Date().toISOString(), ...arguments);
+if (isSafari) {
+  VERBOSE3: console.log("Safari detected");
+  chrome.runtime.onMessage.addListener((msg) => {
+    if (msg.cmd == "relay" || msg.cmd == "popupLoaded") {
+      VERBOSE3: console.log("relay", ...msg);
+    }
+  });
+}
+
+/**
+ * Gets the domain of a tab from source of truth 
+ * that is, the domain of the URL that is currently displayed in the URL bar.
+ * @param {number} tabId - The tab ID to get the URL of.
+ * @returns {Promise<string | null>} - The domain of the tab.
+ */
+async function getTrueTabDomain(tabId) {
+  try {
+    const tabInfo = await chrome.tabs.get(tabId);
+    const domain = parseUrl(tabInfo.url).domain;
+    VERBOSE3: console.log("getTrueTabDomain success", domain);
+    return domain;
+  } catch (error) {
+    VERBOSE3: console.error("getTrueTabDomain error", error);
+    return null;
+  }
+}
+/**
+ * Checks if the true tab domain matches the source of truth
+ * @param {Object} details - The details object from the webRequest event
+ * @returns {Promise<boolean>} - True if the true tab domain matches the source of truth, false otherwise
+ */
+async function isMainTabUrl(details) {
+  if (details.type != "main_frame" && details.type != "outermost_frame") {
+    return false;
+  }
+  try {
+    const trueTabDomain = await getTrueTabDomain(details.tabId);
+    return trueTabDomain === parseUrl(details.url).domain;
+  } catch (error) {
+    VERBOSE2: console.error("isMainTabUrl error", error);
+    return false;
   }
 }
 
@@ -99,7 +158,7 @@ function parseUrl(url) {
         break;
       case "wss:":
         ssl = true;
-        // fallthrough
+      // fallthrough
       case "ws:":
         ws = true;
         break;
@@ -149,38 +208,24 @@ function updateNAT64(domain, addr) {
     return;
   }
   const packed = parseIP(addr);
-  if (packed.length != 128/4) {
+  if (packed.length != 128 / 4) {
     return;  // not an IPv6 address
   }
   // Heuristic: Don't consider this a NAT64 prefix if the embedded
   // IPv4 address falls under 0.x.x.x/8.  This filters out cases where all
   // traffic is proxied to the same address, assuming that most proxies
   // have a low-numbered suffix like ::1.
-  if (packed.substr(96/4, 2) == '00') {
+  if (packed.substr(96 / 4, 2) == '00') {
     return;
   }
   // If this is a new prefix, the watchOptions callback will handle it.
-  addPackedNAT64(packed.slice(0, 96/4));
-}
-
-function reformatForNAT64(addr, doLookup=true) {
-  let packed128 = "";
-  try {
-    packed128 = parseIP(addr);
-  } catch {
-    return addr;  // no change
-  }
-  if (packed128.length != 128/4) {
-    return addr;  // no change
-  }
-  const isNAT64 = doLookup && options[NAT64_KEY].has(packed128.slice(0, 96/4));
-  return formatIPv6(packed128, /*with_dots=*/isNAT64);
+  addPackedNAT64(packed.slice(0, 96 / 4));
 }
 
 // Magic object that calls action and/or pageAction. We want an icon in the
 // address bar when possible (e.g. desktop Firefox) but have a fallback option
 // when browsers forget to implement pageAction (e.g. Firefox 142 for Android).
-const actions = new Proxy({}, {
+const actions = /** @type {chrome.action & chrome.pageAction} */ (new Proxy({}, {
   get(target, prop) {
     const apis = [chrome.action, chrome.pageAction].filter(Boolean);
     return (...args) => {
@@ -188,12 +233,12 @@ const actions = new Proxy({}, {
         if (typeof api[prop] === 'function') {
           api[prop](...args);
         } else if (prop != 'show') {  // action.show() shouldn't exist.
-          throw new Error(`actions.${prop} is not a function`);
+          throw new Error(`actions.${String(prop)} is not a function`);
         }
       }
     };
   }
-});
+}));
 
 class SaveableEntry {
   #prefix;
@@ -242,8 +287,8 @@ class SaveableEntry {
       if (this.#savedJSON == j) {
         return;
       }
-      //console.log("saving", key, j);
-      await chrome.storage.session.set({[key]: j});
+      VERBOSE3: console.log("saving", key, JSON.parse(j));
+      await chrome.storage.session.set({ [key]: j });
       this.#savedJSON = j;
     }
   }
@@ -285,7 +330,7 @@ class SaveableMap {
     let id;
     try {
       id = this.validateId(suffix);
-    } catch(err) {
+    } catch (err) {
       console.error(err);
       return false;
     }
@@ -321,6 +366,9 @@ class TabInfo extends SaveableEntry {
   mainDomain = "";       // Bare domain from the main_frame request.
   mainOrigin = "";       // Origin from the main_frame request.
   committed = false;     // True if onCommitted has fired.
+  /**
+   * @type {Map<string, DomainInfo>}
+   */
   domains = newMap();    // Updated whenever we get some IPs.
   spillCount = 0;        // How many requests didn't fit in domains.
   lastPattern = "";      // To avoid redundant icon redraws.
@@ -352,7 +400,7 @@ class TabInfo extends SaveableEntry {
   tooYoungToDie() {
     // Spare new tabs from garbage collection for a minute or so.
     return (this.#state == TAB_BIRTH &&
-            this.born >= Date.now() - 60*SECONDS);
+      this.born >= Date.now() - 60 * SECONDS);
   }
 
   makeAlive() {
@@ -363,7 +411,7 @@ class TabInfo extends SaveableEntry {
     this.updateIcon();
   }
 
-  remove() {
+  async remove() {
     super.remove();  // no await
     this.#state = TAB_DEAD;
     this.domains = newMap();
@@ -413,7 +461,13 @@ class TabInfo extends SaveableEntry {
     this.save();
   }
 
+  /**
+   * @param {string} domain
+   * @param {string} addr
+   * @param {number} flags
+   */
   addDomain(domain, addr, flags) {
+    VERBOSE2: console.log("addDomain", domain, addr, flags, this.domains);
     let d = this.domains[domain];
     if (!d) {
       // Limit the number of domains per page, to avoid wasting RAM.
@@ -422,7 +476,7 @@ class TabInfo extends SaveableEntry {
         return;
       }
       d = this.domains[domain] =
-          new DomainInfo(this, domain, addr || "(lost)", flags);
+        new DomainInfo(this, domain, addr || "(lost)", flags);
       d.countUp();
     } else {
       const oldAddr = d.addr;
@@ -531,6 +585,10 @@ class TabInfo extends SaveableEntry {
   }
 
   // Build [domain, addr, version, flags] tuple, for a popup.
+  /**
+   * @param {string} domain
+   * @returns {array} tuple
+   */
   getTuple(domain) {
     const d = this.domains[domain];
     if (!d) {
@@ -605,7 +663,11 @@ class RequestInfo extends SaveableEntry {
   // Typically this contains one {tabId: tabBorn} entry,
   // but for Service Worker requests there may be multiple tabs.
   tabIdToBorn = newMap();
+   
   domain = null;
+  
+  // Set to true when onCompleted/onErrorOccurred fires, so we can countDown later
+  completed = false;
 
   afterLoad() {
     for (const [tabId, tabBorn] of Object.entries(this.tabIdToBorn)) {
@@ -621,7 +683,7 @@ class RequestInfo extends SaveableEntry {
     }
     if (Object.keys(this.tabIdToBorn).length == 0) {
       requestMap.remove(this.id());
-      console.log("garbage-collected RequestInfo", this.id());
+      VERBOSE1: console.log("garbage-collected RequestInfo", this.id());
       return;
     }
   }
@@ -636,17 +698,22 @@ class IPCacheEntry extends SaveableEntry {
 const tabMap = new SaveableMap(TabInfo, "tab/")
 
 // requestId -> RequestInfo
+/**
+ * @type {SaveableMap | RequestInfo}
+ */
 const requestMap = new SaveableMap(RequestInfo, "req/");
 
-// Firefox-only domain->ip cache, to help work around
+// For Firefox domain->ip cache
+// in Firefox cached pages do not return IP in details
 // https://bugzilla.mozilla.org/show_bug.cgi?id=1395020
 const IP_CACHE_LIMIT = 1024;
-const ipCache = (typeof browser == "undefined") ? null : new SaveableMap(IPCacheEntry, "ip/");
+const ipCache = isFirefox ?
+  new SaveableMap(IPCacheEntry, "ip/") : null;
 let ipCacheSize = 0;
 
 function ipCacheGrew() {
   ++ipCacheSize;
-  //console.log("ipCache", ipCacheSize, Object.keys(ipCache).length);
+  VERBOSE2: console.log("ipCache", ipCacheSize, Object.keys(ipCache).length);
   if (ipCacheSize <= IP_CACHE_LIMIT) {
     return;
   }
@@ -656,7 +723,7 @@ function ipCacheGrew() {
   ipCacheSize = flat.length;  // redundant
   for (const cachedAddr of flat) {
     ipCache.remove(cachedAddr.id());
-    if (--ipCacheSize <= IP_CACHE_LIMIT/2) {
+    if (--ipCacheSize <= IP_CACHE_LIMIT / 2) {
       break;
     }
   }
@@ -689,23 +756,32 @@ function lookupOriginMap(origin) {
   return originMap[origin] || new Set();
 }
 
+async function detectDarkMode() {
+  VERBOSE2: console.log("detectdarkmode");
+  await optionsReady;
+  VERBOSE2: console.log("optionsReady");
+  const query = window.matchMedia("(prefers-color-scheme: dark)");
+  VERBOSE2: console.log("query", query);
+  setColorIsDarkMode(REGULAR_COLOR, query.matches);
+  VERBOSE2: console.log("setColorIsDarkMode", query.matches);
+  query.addEventListener("change", (event) => {
+    VERBOSE2: console.log("change", event);
+    setColorIsDarkMode(REGULAR_COLOR, event.matches);
+  });
+}
+
 // Dark mode detection. This can eventually be replaced by
 // https://github.com/w3c/webextensions/issues/229
 if (typeof window !== 'undefined' && window.matchMedia) {
   // Firefox can detect dark mode from the background page.
-  (async () => {
-    await optionsReady;
-    const query = window.matchMedia('(prefers-color-scheme: dark)');
-    setColorIsDarkMode(REGULAR_COLOR, query.matches);
-    query.addEventListener("change", (event) => {
-      setColorIsDarkMode(REGULAR_COLOR, event.matches);
-    });
-  })();
+  detectDarkMode();
 } else {
   // Chrome needs an offscreen document to detect dark mode.
   chrome.runtime.onMessage.addListener((message) => {
-    console.log("onMessage", message);
+    VERBOSE2: console.log("onMessage", message);
     if (message.hasOwnProperty("darkModeOffscreen")) {
+      VERBOSE2: console.log("onMessage", message);
+      VERBOSE2: console.log("setColorIsDarkMode", message.darkModeOffscreen);
       setColorIsDarkMode(REGULAR_COLOR, message.darkModeOffscreen);
     }
   });
@@ -719,7 +795,7 @@ if (typeof window !== 'undefined' && window.matchMedia) {
         justification: 'detect light/dark mode for icon colors',
       });
     } catch {
-      console.log("detectdarkmode failed!");
+      VERBOSE1: console.log("detectdarkmode failed!");
     }
     // The offscreen document can't provide darkMode updates, so kill it now.
     // We will still get updates from the popup windows when visible.
@@ -770,79 +846,173 @@ const storageReady = initStorage();
 // This class keeps track of the visible popup windows,
 // and streams changes to them as they occur.
 class Popups {
-  ports = newMap();  // tabId -> Port
+  /** @type {Record<string, chrome.runtime.Port>} */
+  ports = newMap() // tabId -> Port
+
+  /**
+   * @param {string} tabId
+   * @param {any} data
+   */
+  sendMessage(tabId, data) {
+    try {
+      this.ports[tabId]?.postMessage(data)
+    } catch (err) {
+      VERBOSE2: console.error('sendMessage', 'port', tabId, err)
+    }
+  }
+
+  /**
+   * @param {string} tabId
+   * @param {any} msg
+   */
+  onMessage(tabId, msg) {
+    VERBOSE3: console.log(
+      'Popups.onMessage',
+      'tabId',
+      tabId,
+      'cmd',
+      msg.cmd,
+      'originalMsg',
+      msg.msg
+    )
+  }
 
   // Attach a new popup window, and start sending it updates.
+  /**
+   * @param {chrome.runtime.Port} port
+   */
   attachPort(port) {
-    const tabId = port.name;
-    this.ports[tabId] = port;
-    tabMap[tabId]?.pushAll();
-  };
+    const tabId = port.name
+    this.ports[tabId] = port
+    VERBOSE3: console.log('attachPort', 'ports', Object.keys(this.ports))
+    VERBOSE3: port.onMessage.addListener((msg) => this.onMessage(tabId, msg))
+    tabMap[tabId]?.pushAll()
+  }
 
+  /**
+   *
+   * @param {chrome.runtime.Port} port
+   */
   detachPort(port) {
-    const tabId = port.name;
-    delete this.ports[tabId];
-  };
+    const tabId = port.name
+    VERBOSE3: port.onMessage.removeListener((msg) => this.onMessage(tabId, msg))
+    port.disconnect()
+    delete this.ports[tabId]
+  }
 
   pushAll(tabId, tuples, pattern, color, spillCount) {
-    this.ports[tabId]?.postMessage({
-      cmd: "pushAll",
+    VERBOSE4: console.log(
+      'pushAll',
+      'tabId',
+      tabId,
+      'tuples',
+      tuples,
+      'pattern',
+      pattern,
+      'color',
+      color,
+      'spillCount',
+      spillCount
+    )
+    this.sendMessage(tabId, {
+      cmd: 'pushAll',
       tuples: tuples,
       pattern: pattern,
       color: color,
       spillCount: spillCount,
-    });
-  };
+    })
+  }
 
+  /**
+   * @param {string} tabId
+   * @param {Array} tuple
+   */
   pushOne(tabId, tuple) {
     if (!tuple) {
-      return;
+      return
     }
-    this.ports[tabId]?.postMessage({
-      cmd: "pushOne",
+    VERBOSE4: console.log(
+      "pushOne",
+      "tabId",
+      tabId,
+      "domain",
+      tuple[0],
+      "addr",
+      tuple[1],
+      "version",
+      tuple[2],
+      "flags",
+      tuple[3],
+      "caller: ",
+      new Error().stack
+        .split("\n")
+        .map((line) => line.trim()),
+    );
+    this.sendMessage(tabId, {
+      cmd: 'pushOne',
       tuple: tuple,
-    });
-  };
+    })
+  }
 
   pushPattern(tabId, pattern, color) {
-    this.ports[tabId]?.postMessage({
-      cmd: "pushPattern",
+    VERBOSE4: console.log(
+      'pushPattern',
+      'tabId',
+      tabId,
+      'pattern',
+      pattern,
+      'color',
+      color
+    )
+    this.sendMessage(tabId, {
+      cmd: 'pushPattern',
       pattern: pattern,
       color: color,
-    });
-  };
+    })
+  }
 
   pushSpillCount(tabId, count) {
-    this.ports[tabId]?.postMessage({
-      cmd: "pushSpillCount",
+    VERBOSE4: console.log('pushSpillCount', 'tabId', tabId, 'count', count)
+    this.sendMessage(tabId, {
+      cmd: 'pushSpillCount',
       spillCount: count,
-    });
-  };
+    })
+  }
 
   shake(tabId) {
-    this.ports[tabId]?.postMessage({
-      cmd: "shake",
-    });
+    VERBOSE2: console.log('shake', 'tabId', tabId)
+    this.sendMessage(tabId, {
+      cmd: 'shake',
+    })
+  }
+
+  relayLog(message) {
+    for (const tabId of Object.keys(this.ports)) {
+      this.sendMessage(tabId, {
+        cmd: 'relayLog',
+        message: message,
+      })
+    }
   }
 }
 
 const popups = new Popups();
 
-chrome.runtime.onConnect.addListener(wrap(async (port) => {
+chrome.runtime.onConnect.addListener(async (port) => {
   await storageReady;
   popups.attachPort(port);
   port.onDisconnect.addListener(() => {
     popups.detachPort(port);
   });
-}));
+});
 
 // Refresh icons after chrome.runtime.reload()
-chrome.runtime.onInstalled.addListener(wrap(async () => {
+chrome.runtime.onInstalled.addListener(async () => {
   await storageReady;
   for (const tabInfo of Object.values(tabMap)) {
     tabInfo.refreshPageAction();
   }
-}));
+});
 
 // -- TabTracker --
 
@@ -862,19 +1032,19 @@ class TabTracker {
   tabSet = newMap();  // Set of all known tabIds
 
   constructor() {
-    chrome.tabs.onCreated.addListener(wrap(async (tab) => {
+    chrome.tabs.onCreated.addListener(async (tab) => {
       await storageReady;
       this.#addTab(tab.id, "onCreated");
-    }));
-    chrome.tabs.onRemoved.addListener(wrap(async (tabId) => {
+    });
+    chrome.tabs.onRemoved.addListener(async (tabId) => {
       await storageReady;
       this.#removeTab(tabId, "onRemoved");
-    }));
-    chrome.tabs.onReplaced.addListener(wrap(async (addId, removeId) => {
+    });
+    chrome.tabs.onReplaced.addListener(async (addId, removeId) => {
       await storageReady;
       this.#removeTab(removeId, "onReplaced");
       this.#addTab(addId, "onReplaced");
-    }));
+    });
     this.#pollAllTabs();
   }
 
@@ -897,18 +1067,18 @@ class TabTracker {
           this.#removeTab(tabId, "pollAllTabs");
         }
       }
-      await sleep(300*SECONDS);
+      await sleep(300 * SECONDS);
     }
   }
 
   #addTab(tabId, logText) {
-    debugLog("addTab", tabId, logText);
+    VERBOSE3: console.log("addTab", tabId, logText);
     this.tabSet[tabId] = true;
     tabMap[tabId]?.makeAlive();
   }
 
   #removeTab(tabId, logText) {
-    debugLog("removeTab", tabId, logText);
+    VERBOSE3: console.log("removeTab", tabId, logText);
     delete this.tabSet[tabId];
     if (tabMap[tabId]?.tooYoungToDie()) {
       return;
@@ -930,7 +1100,7 @@ const tabTracker = new TabTracker();
 //
 // Conveniently, this also ensures that the previous page data is cleared
 // when navigating to a file://, chrome://, or Chrome Web Store URL.
-chrome.webNavigation.onBeforeNavigate.addListener(wrap(async (details) => {
+chrome.webNavigation.onBeforeNavigate.addListener(async (details) => {
   if (!(details.frameId == 0 && details.tabId > 0)) {
     return;
   }
@@ -940,15 +1110,15 @@ chrome.webNavigation.onBeforeNavigate.addListener(wrap(async (details) => {
   if (requestInfo && requestInfo.domain == null) {
     return;  // Typical no-op case.
   }
-  debugLog(`tabId=${details.tabId} is a service worker or special URL`);
+  VERBOSE3: console.log(`tabId=${details.tabId} is a service worker or special URL`);
   const parsed = parseUrl(details.url);
   tabMap.remove(details.tabId);
   tabInfo = tabMap.lookupOrNew(details.tabId);
   tabInfo.setInitialDomain(-1, parsed.domain, parsed.origin);
-}));
+});
 
-chrome.webNavigation.onCommitted.addListener(wrap(async (details) => {
-  debugLog("wN.oC", details?.tabId, details?.url, details);
+chrome.webNavigation.onCommitted.addListener(async (details) => {
+  VERBOSE3: console.log("wN.oC", details?.tabId, details?.url, details);
   await storageReady;
   if (details.frameId != 0) {
     return;
@@ -956,27 +1126,28 @@ chrome.webNavigation.onCommitted.addListener(wrap(async (details) => {
   const parsed = parseUrl(details.url);
   const tabInfo = tabMap.lookupOrNew(details.tabId);
   tabInfo.setCommitted(parsed.domain, parsed.origin);
-}));
+});
 
 // -- tabs --
 
 // Whenever anything tab-related happens, try to refresh the pageAction.  This
 // is hacky and inefficient, but the back-stabbing browser leaves me no choice.
 // This seems to fix http://crbug.com/124970 and some problems on Google+.
-chrome.tabs.onUpdated.addListener(wrap(async (tabId, changeInfo, tab) => {
-  debugLog("tabs.oU", tabId);
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  VERBOSE4: console.log("tabs.oU", tabId);
   await storageReady;
   const tabInfo = tabMap[tabId];
   if (tabInfo) {
     tabInfo.color = tab.incognito ? INCOGNITO_COLOR : REGULAR_COLOR;
     tabInfo.refreshPageAction();
   }
-}));
+});
 
 // -- webRequest --
 
-chrome.webRequest.onBeforeRequest.addListener(wrap(async (details) => {
-  //debugLog("wR.oBR", details?.tabId, details?.url, details);
+// @ts-ignore
+chrome.webRequest.onBeforeRequest.addListener(async (details) => {
+  VERBOSE3: console.log("wR.oBR", details?.tabId, details?.url, details);
   await storageReady;
   const tabId = details.tabId;
   const tabInfos = [];
@@ -993,8 +1164,10 @@ chrome.webRequest.onBeforeRequest.addListener(wrap(async (details) => {
         tabInfos.push(tabInfo);
       }
     }
+  // @ts-ignore
   } else if (tabId == -1 && (details.initiator || details.documentUrl)) {
     // Chrome uses initiator, Firefox uses documentUrl.
+    // @ts-ignore
     const initiator = details.initiator || parseUrl(details.documentUrl).origin;
     // Request is from a tabless Service Worker.
     // Find all tabs matching the initiator's origin.
@@ -1017,15 +1190,15 @@ chrome.webRequest.onBeforeRequest.addListener(wrap(async (details) => {
     requestInfo.tabIdToBorn[tabInfo.id()] = tabInfo.born;
   }
   requestInfo.domain = null;
-  requestInfo.save();
-}), FILTER_ALL_URLS);
+  // Don't save here - will be saved in onResponseStarted when domain is set
+}, FILTER_ALL_URLS);
 
 // In the event of a redirect, the mainOrigin may change
 // (from http: to https:) between the onBeforeRequest and onCommitted events,
 // triggering an "access denied" error.  Patch this from onBeforeRedirect.
 //
 // As of 2022, this can be tested by visiting http://maps.google.com/
-chrome.webRequest.onBeforeRedirect.addListener(wrap(async (details) => {
+chrome.webRequest.onBeforeRedirect.addListener(async (details) => {
   await storageReady;
   if (!(await isMainTabUrl(details))) {
     return;
@@ -1047,15 +1220,36 @@ chrome.webRequest.onBeforeRedirect.addListener(wrap(async (details) => {
     tabInfo.setInitialDomain(requestInfo.id(), parsed.domain, parsed.origin);
   }
 
-}), FILTER_ALL_URLS);
+}, FILTER_ALL_URLS);
 
-chrome.webRequest.onResponseStarted.addListener(wrap(async (details) => {
-  //debugLog("wR.oRS", details?.tabId, details?.url, details);
+chrome.webRequest.onResponseStarted.addListener(
+  /**
+   * @param {chrome.webRequest.OnResponseStartedDetails} details 
+   * @returns {Promise<void>}
+   */
+  async (details) => {
+
   await storageReady;
+  /**
+   * @type {RequestInfo}
+   */
   const requestInfo = requestMap[details.requestId];
+
+  VERBOSE3: !isSafari && console.log(
+    "wR.oRS", details?.tabId,
+    details?.requestId,
+    new URL(details?.url).hostname,
+    details?.ip, "type", details.type
+  );
+
   if (!requestInfo) {
+    VERBOSE3: console.log("wR.oRS: requestInfo not found for", details.requestId);
     return;
   }
+   
+  /**
+   * @type {TabInfo[]}
+   */
   const tabInfos = [];
   for (const [tabId, tabBorn] of Object.entries(requestInfo.tabIdToBorn)) {
     const tabInfo = tabMap[tabId];
@@ -1064,16 +1258,37 @@ chrome.webRequest.onResponseStarted.addListener(wrap(async (details) => {
     }
     tabInfos.push(tabInfo);
   }
+
   if (!tabInfos.length) {
     return;
   }
   const parsed = parseUrl(details.url);
   if (!parsed.domain) {
+    VERBOSE3: console.error("wR.oRS: no domain", details.url);
     return;
   }
 
   let addr = details.ip;
   let fromCache = details.fromCache;
+
+  // If no IP address is available and we have a domain
+  // try asking the Swift app for the IP address
+  // This will use system resolvers, maintaing privacy 
+  // and respecting local DNS settings.
+  // in Safari, IP is never returned in details
+  // likely due to Apple's stance on privacy
+  // https://github.com/pmarks-net/ipvfoo/issues/39
+  if (!addr && isSafari) {
+    addr = await resolveDomainViaNativeWithCache(parsed.domain);
+    VERBOSE3: console.log(
+      "wR.oRS", details?.tabId, details?.requestId, parsed.domain, addr, "type", details.type);
+    
+    // Check if request was removed from map during the async DNS lookup
+    if (requestMap[details.requestId] !== requestInfo) {
+      VERBOSE3: console.log("wR.oRS: request was removed during DNS lookup", details.requestId);
+      return;
+    }
+  }
 
   if (!fromCache) {
     updateNAT64(parsed.domain, addr);
@@ -1098,6 +1313,7 @@ chrome.webRequest.onResponseStarted.addListener(wrap(async (details) => {
       }
     }
   }
+
   addr = reformatForNAT64(addr) || "(no address)";
 
   let flags = parsed.ssl ? FLAG_SSL : FLAG_NOSSL;
@@ -1113,24 +1329,48 @@ chrome.webRequest.onResponseStarted.addListener(wrap(async (details) => {
   if (requestInfo.domain) throw `Duplicate onResponseStarted: ${parsed.domain}`;
   requestInfo.domain = parsed.domain;
   requestInfo.save();
+  VERBOSE2: console.log("tabInfos", tabInfos);
   for (const tabInfo of tabInfos) {
     tabInfo.addDomain(parsed.domain, addr, flags);
   }
-}), FILTER_ALL_URLS);
+  
+  // If request was already marked as completed (onCompleted fired during DNS lookup),
+  // we need to clean it up now, this happens in Safari due to the async DNS lookup
+  if (requestInfo.completed) {
+    for (const [tabId, tabBorn] of Object.entries(requestInfo.tabIdToBorn)) {
+      const tabInfo = tabMap[tabId];
+      if (tabInfo?.born == tabBorn) {
+        tabInfo.domains[requestInfo.domain]?.countDown();
+      }
+    }
+    requestMap.remove(details.requestId);
+  }
 
-const forgetRequest = wrap(async (details) => {
+}, FILTER_ALL_URLS);
+
+async function forgetRequest(details) {
   await storageReady;
-  const requestInfo = requestMap.remove(details.requestId);
-  if (!requestInfo?.domain) {
+  const requestInfo = requestMap[details.requestId];
+  if (!requestInfo) {
     return;
   }
+  
+  if (!requestInfo.domain) {
+    // Request hasn't set domain yet (onResponseStarted may still be running)
+    // Mark it as completed so onResponseStarted can clean up
+    requestInfo.completed = true;
+    return;
+  }
+  
+  // Now safe to remove since we have the domain
+  requestMap.remove(details.requestId);
   for (const [tabId, tabBorn] of Object.entries(requestInfo.tabIdToBorn)) {
     const tabInfo = tabMap[tabId];
     if (tabInfo?.born == tabBorn) {
       tabInfo.domains[requestInfo.domain]?.countDown();
     }
   }
-});
+};
 chrome.webRequest.onCompleted.addListener(forgetRequest, FILTER_ALL_URLS);
 chrome.webRequest.onErrorOccurred.addListener(forgetRequest, FILTER_ALL_URLS);
 
@@ -1160,9 +1400,9 @@ chrome.contextMenus?.onClicked.addListener((info, tab) => {
   const text = info.selectionText;
   if (IP4_CHARS.test(text) || IP6_CHARS.test(text)) {
     // bgp.he.net doesn't support dotted IPv6 addresses.
-    chrome.tabs.create({url: `https://bgp.he.net/ip/${reformatForNAT64(text, false)}`});
+    chrome.tabs.create({ url: `https://bgp.he.net/ip/${reformatForNAT64(text, false)}` });
   } else if (DNS_CHARS.test(text)) {
-    chrome.tabs.create({url: `https://bgp.he.net/dns/${text}`});
+    chrome.tabs.create({ url: `https://bgp.he.net/dns/${text}` });
   } else {
     // Malformed selection; shake the popup content.
     const tabId = /#(\d+)$/.exec(info.pageUrl);
@@ -1192,3 +1432,5 @@ watchOptions(async (optionsChanged) => {
     }
   }
 });
+
+VERBOSE3: console.log("background.js loaded");

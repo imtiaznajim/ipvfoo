@@ -1,38 +1,59 @@
-/*
-Copyright (C) 2011  Paul Marks  http://www.pmarks.net/
+import tableBgUrl from "./assets/1x1_808080.png";
+import cachedArrowUrl from "./assets/cached_arrow.png";
+import grayLockUrl from "./assets/gray_lock.png";
+import graySchrodingersLockUrl from "./assets/gray_schrodingers_lock.png";
+import grayUnlockUrl from "./assets/gray_unlock.png";
+import serviceworkerUrl from "./assets/serviceworker.png";
+import snipUrl from "./assets/snip.png";
+import websocketUrl from "./assets/websocket.png";
+import {
+  addEventListenersForFirefoxLinks,
+  buildIcon,
+  FLAG_CONNECTED,
+  FLAG_NOSSL,
+  FLAG_NOTWORKER,
+  FLAG_SSL,
+  FLAG_UNCACHED,
+  FLAG_WEBSOCKET,
+  IS_MOBILE,
+  isSafari,
+  optionsReady,
+  removeChildren,
+  setColorIsDarkMode,
+  spriteImgReady
+} from "./lib/common.js";
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
-"use strict";
-
-// Requires <script src="common.js">
-
-const ALL_URLS = "<all_urls>";
+const ALL_URLS = '<all_urls>'
 
 // Snip domains longer than this, to avoid horizontal scrolling.
 const LONG_DOMAIN = 50;
 
-const tabId = window.location.hash.substr(1);
-if (!isFinite(Number(tabId))) {
-  throw "Bad tabId";
+const tabId = window.location.hash.substring(1);
+if (!Number.isFinite(Number(tabId))) {
+  throw new Error("Bad tabId");
 }
 
 let table = null;
+let lastPattern = "";
+let lastColor = "";  // regular/incognito color scheme
+let port = null;
 
 window.onload = async function() {
   table = document.getElementById("addr_table");
   table.onmousedown = handleMouseDown;
+  // Set table background image from inlined PNG
+  table.style.backgroundImage = `url("${tableBgUrl}")`;
+  addEventListenersForFirefoxLinks(document.body);
+  if (isSafari) {
+    document.body.classList.add("safari");
+    // Wrap content in scrollable div for Safari
+    const wrapper = document.createElement("div");
+    wrapper.className = "safari-scroll-wrapper";
+    while (document.body.firstChild) {
+      wrapper.appendChild(document.body.firstChild);
+    }
+    document.body.appendChild(wrapper);
+  }
   await beg();
   if (IS_MOBILE) {
     document.getElementById("mobile_footer").style.display = "flex";
@@ -71,10 +92,20 @@ async function beg() {
 }
 
 function connectToExtension() {
-  const port = chrome.runtime.connect(null, {name: tabId});
-  port.onMessage.addListener((msg) => {
+  if (port) {
+    console.log("connectToExtension", "port already connected", port);
+    return;
+  }
+  port = chrome.runtime.connect(null, {name: tabId});
+  VERBOSE1: console.log("connectToExtension", port);
+
+  port.onMessage.addListener(async (msg) => {
     document.bgColor = "";
-    //console.log("onMessage", msg.cmd, msg);
+    VERBOSE1: console.log("onMessage", msg.cmd, msg);
+    if (isSafari) { 
+      // relay message to background page because debugging safari popup is hard
+      VERBOSE3: port.postMessage({cmd: "ack", msg});
+    }
     switch (msg.cmd) {
       case "pushAll":
         return pushAll(msg.tuples, msg.pattern, msg.color, msg.spillCount);
@@ -89,8 +120,11 @@ function connectToExtension() {
     }
   });
 
+  port.postMessage({cmd: "popupLoaded"});
+
   port.onDisconnect.addListener(() => {
     document.bgColor = "lightpink";
+    port = null;
     setTimeout(connectToExtension, 1);
   });
 }
@@ -132,8 +166,6 @@ function pushOne(tuple) {
   }
 }
 
-let lastPattern = "";
-let lastColor = "";  // regular/incognito color scheme
 async function pushPattern(pattern, color) {
   if (lastColor != color) {
     lastColor = color;
@@ -149,7 +181,7 @@ async function pushPattern(pattern, color) {
   }
   await spriteImgReady;
   for (const color of ["darkfg", "lightfg"]) {
-    const canvas = document.getElementById(`pattern_icon_${color}`);
+    const canvas = /** @type {HTMLCanvasElement} */ (document.getElementById(`pattern_icon_${color}`));
     const ctx = canvas.getContext("2d");
     const imageData = buildIcon(pattern, 32, color);
     ctx.putImageData(imageData, 0, 0);
@@ -191,7 +223,7 @@ function scrollbarHack() {
   }
   setTimeout(() => {
     const e = document.documentElement;
-    if (e.scrollHeight > e.clientHeight) {
+    if (e.scrollHeight > e.clientHeight && !isSafari) {
       document.body.style.paddingRight = '20px';
     } else if (!redrawn) {
       document.body.classList.toggle('force-redraw');
@@ -229,16 +261,16 @@ function makeSslImg(flags) {
   switch (flags & (FLAG_SSL | FLAG_NOSSL)) {
     case FLAG_SSL | FLAG_NOSSL:
       return makeImg(
-          "gray_schrodingers_lock.png",
+          graySchrodingersLockUrl,
           "Mixture of HTTPS and non-HTTPS connections.");
     case FLAG_SSL:
       return makeImg(
-          "gray_lock.png",
+          grayLockUrl,
           "Connection uses HTTPS.\n" +
           "Warning: IPvFoo does not verify the integrity of encryption.");
     default:
       return makeImg(
-          "gray_unlock.png",
+          grayUnlockUrl,
           "Connection does not use HTTPS.");
   }
 }
@@ -293,20 +325,21 @@ function makeRow(isFirst, tuple) {
   cacheTd.className = `cacheTd${connectedClass}`;
   if (flags & FLAG_WEBSOCKET) {
     cacheTd.appendChild(
-        makeImg("websocket.png", "WebSocket handshake; connection may still be active."));
+        makeImg(websocketUrl, "WebSocket handshake; connection may still be active."));
     cacheTd.style.paddingLeft = '6pt';
   } else if (!(flags & FLAG_NOTWORKER)) {
     cacheTd.appendChild(
-        makeImg("serviceworker.png", "Service Worker request; possibly from a different tab."));
+        makeImg(serviceworkerUrl, "Service Worker request; possibly from a different tab."));
     cacheTd.style.paddingLeft = '6pt';
   } else if (!(flags & FLAG_UNCACHED)) {
     cacheTd.appendChild(
-        makeImg("cached_arrow.png", "Data from cached requests only."));
+        makeImg(cachedArrowUrl, "Data from cached requests only."));
     cacheTd.style.paddingLeft = '6pt';
   } else {
     cacheTd.style.paddingLeft = '0';
   }
 
+  // @ts-ignore - Custom property for domain tracking
   tr._domain = domain;
   tr.appendChild(domainTd);
   tr.appendChild(addrTd);
@@ -333,7 +366,7 @@ function makeSnippedText(domain, keep) {
   f.appendChild(snippedText);
 
   // Add clickable "..." image.
-  const snipImg = makeImg("snip.png", "");
+  const snipImg = makeImg(snipUrl, "");
   snipImg.className = "snipImg";
   const snipLink = document.createElement("a");
   snipLink.className = "snipLinkInvisible snipLinkVisible";
@@ -356,7 +389,7 @@ function removeStyles(...selectors) {
   const stylesheet = document.styleSheets[0];
   for (const selector of selectors) {
     for (let i = stylesheet.cssRules.length - 1; i >= 0; i--) {
-      const rule = stylesheet.cssRules[i];
+      const rule = /** @type {CSSStyleRule} */ (stylesheet.cssRules[i]);
       if (rule.selectorText === selector) {
         stylesheet.deleteRule(i);
       }
@@ -420,3 +453,5 @@ function selectWholeAddress(node, sel) {
     sel.addRange(range);
   }
 }
+
+chrome.runtime.sendMessage({tabId, cmd: "popupLoaded"});

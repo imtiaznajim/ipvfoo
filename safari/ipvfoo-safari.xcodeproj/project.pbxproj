@@ -1,0 +1,1036 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B2C2F7EF2EA2ACB90051EEFB /* ipvfoo-safari Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B2C2F7EE2EA2ACB90051EEFB /* ipvfoo-safari Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B2C2F7F92EA2ACB90051EEFB /* ipvfoo-safari Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B2C2F7F82EA2ACB90051EEFB /* ipvfoo-safari Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B2C2F7F02EA2ACB90051EEFB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B2C2F7B52EA2ACB70051EEFB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B2C2F7ED2EA2ACB90051EEFB;
+			remoteInfo = "ipvfoo-safari Extension (iOS)";
+		};
+		B2C2F7FA2EA2ACB90051EEFB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B2C2F7B52EA2ACB70051EEFB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B2C2F7F72EA2ACB90051EEFB;
+			remoteInfo = "ipvfoo-safari Extension (macOS)";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B2C2F8212EA2ACB90051EEFB /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				B2C2F7EF2EA2ACB90051EEFB /* ipvfoo-safari Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B2C2F82B2EA2ACB90051EEFB /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				B2C2F7F92EA2ACB90051EEFB /* ipvfoo-safari Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		A43882D42EA43A1A00F64985 /* build_js.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_js.sh; sourceTree = "<group>"; };
+		A43882D62EA43A1A00F64985 /* safari.xcfilelist */ = {isa = PBXFileReference; lastKnownFileType = text.xcfilelist; path = safari.xcfilelist; sourceTree = "<group>"; };
+		B2C2F7D12EA2ACB90051EEFB /* ipvfoo-safari.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ipvfoo-safari.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B2C2F7E32EA2ACB90051EEFB /* ipvfoo-safari.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ipvfoo-safari.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B2C2F7EE2EA2ACB90051EEFB /* ipvfoo-safari Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "ipvfoo-safari Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B2C2F7F82EA2ACB90051EEFB /* ipvfoo-safari Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "ipvfoo-safari Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B2C2F9032EA2ACB90051EEFB /* SafariResolverTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SafariResolverTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		B2C2F81C2EA2ACB90051EEFB /* Exceptions for "Shared (App)" folder in "ipvfoo-safari (iOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"/Localized: Resources/Main.html",
+				Assets.xcassets,
+				Resources/Icon.png,
+				Resources/Script.js,
+				Resources/Style.css,
+				ViewController.swift,
+			);
+			target = B2C2F7D02EA2ACB90051EEFB /* ipvfoo-safari (iOS) */;
+		};
+		B2C2F8202EA2ACB90051EEFB /* Exceptions for "iOS (Extension)" folder in "ipvfoo-safari Extension (iOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = B2C2F7ED2EA2ACB90051EEFB /* ipvfoo-safari Extension (iOS) */;
+		};
+		B2C2F8252EA2ACB90051EEFB /* Exceptions for "iOS (App)" folder in "ipvfoo-safari (iOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = B2C2F7D02EA2ACB90051EEFB /* ipvfoo-safari (iOS) */;
+		};
+		B2C2F8262EA2ACB90051EEFB /* Exceptions for "Shared (App)" folder in "ipvfoo-safari (macOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"/Localized: Resources/Main.html",
+				Assets.xcassets,
+				Resources/Icon.png,
+				Resources/Script.js,
+				Resources/Style.css,
+				ViewController.swift,
+			);
+			target = B2C2F7E22EA2ACB90051EEFB /* ipvfoo-safari (macOS) */;
+		};
+		B2C2F82A2EA2ACB90051EEFB /* Exceptions for "macOS (Extension)" folder in "ipvfoo-safari Extension (macOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = B2C2F7F72EA2ACB90051EEFB /* ipvfoo-safari Extension (macOS) */;
+		};
+		B2C2F82F2EA2ACB90051EEFB /* Exceptions for "Shared (Extension)" folder in "ipvfoo-safari Extension (iOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				DNSResolver.swift,
+				Resources/popup.js,
+				Resources/popup.html,
+				Resources/options.html,
+				Resources/manifest.json,
+				Resources/detectdarkmode.js,
+				Resources/detectdarkmode.html,
+				Resources/background.js,
+				Resources/assets/websocket.png,
+				Resources/assets/sprites32.png,
+				Resources/assets/sprites16.png,
+				Resources/assets/snip.png,
+				Resources/assets/serviceworker.png,
+				Resources/assets/icon16.png,
+				Resources/assets/icon16_transparent.png,
+				Resources/assets/icon128.png,
+				Resources/assets/gray_unlock.png,
+				Resources/assets/gray_schrodingers_lock.png,
+				Resources/assets/gray_lock.png,
+				Resources/assets/cached_arrow.png,
+				Resources/assets/1x1_808080.png,
+				SafariWebExtensionHandler.swift,
+			);
+			target = B2C2F7ED2EA2ACB90051EEFB /* ipvfoo-safari Extension (iOS) */;
+		};
+		B2C2F8302EA2ACB90051EEFB /* Exceptions for "Shared (Extension)" folder in "ipvfoo-safari Extension (macOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				DNSResolver.swift,
+				Resources/popup.js,
+				Resources/popup.html,
+				Resources/options.html,
+				Resources/manifest.json,
+				Resources/detectdarkmode.js,
+				Resources/detectdarkmode.html,
+				Resources/background.js,
+				Resources/assets/websocket.png,
+				Resources/assets/sprites32.png,
+				Resources/assets/sprites16.png,
+				Resources/assets/snip.png,
+				Resources/assets/serviceworker.png,
+				Resources/assets/icon16.png,
+				Resources/assets/icon16_transparent.png,
+				Resources/assets/icon128.png,
+				Resources/assets/gray_unlock.png,
+				Resources/assets/gray_schrodingers_lock.png,
+				Resources/assets/gray_lock.png,
+				Resources/assets/cached_arrow.png,
+				Resources/assets/1x1_808080.png,
+				SafariWebExtensionHandler.swift,
+			);
+			target = B2C2F7F72EA2ACB90051EEFB /* ipvfoo-safari Extension (macOS) */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		B2C2F7B92EA2ACB70051EEFB /* Shared (App) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B2C2F81C2EA2ACB90051EEFB /* Exceptions for "Shared (App)" folder in "ipvfoo-safari (iOS)" target */,
+				B2C2F8262EA2ACB90051EEFB /* Exceptions for "Shared (App)" folder in "ipvfoo-safari (macOS)" target */,
+			);
+			path = "Shared (App)";
+			sourceTree = "<group>";
+		};
+		B2C2F7C22EA2ACB90051EEFB /* Shared (Extension) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B2C2F82F2EA2ACB90051EEFB /* Exceptions for "Shared (Extension)" folder in "ipvfoo-safari Extension (iOS)" target */,
+				B2C2F8302EA2ACB90051EEFB /* Exceptions for "Shared (Extension)" folder in "ipvfoo-safari Extension (macOS)" target */,
+			);
+			path = "Shared (Extension)";
+			sourceTree = "<group>";
+		};
+		B2C2F7D32EA2ACB90051EEFB /* iOS (App) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B2C2F8252EA2ACB90051EEFB /* Exceptions for "iOS (App)" folder in "ipvfoo-safari (iOS)" target */,
+			);
+			path = "iOS (App)";
+			sourceTree = "<group>";
+		};
+		B2C2F7E42EA2ACB90051EEFB /* macOS (App) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "macOS (App)";
+			sourceTree = "<group>";
+		};
+		B2C2F7F22EA2ACB90051EEFB /* iOS (Extension) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B2C2F8202EA2ACB90051EEFB /* Exceptions for "iOS (Extension)" folder in "ipvfoo-safari Extension (iOS)" target */,
+			);
+			path = "iOS (Extension)";
+			sourceTree = "<group>";
+		};
+		B2C2F7FC2EA2ACB90051EEFB /* macOS (Extension) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B2C2F82A2EA2ACB90051EEFB /* Exceptions for "macOS (Extension)" folder in "ipvfoo-safari Extension (macOS)" target */,
+			);
+			path = "macOS (Extension)";
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B2C2F7CE2EA2ACB90051EEFB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B2C2F7E02EA2ACB90051EEFB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B2C2F7EB2EA2ACB90051EEFB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B2C2F7F52EA2ACB90051EEFB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		B2C2F7B42EA2ACB70051EEFB = {
+			isa = PBXGroup;
+			children = (
+				A43882D42EA43A1A00F64985 /* build_js.sh */,
+				A43882D62EA43A1A00F64985 /* safari.xcfilelist */,
+				B2C2F7B92EA2ACB70051EEFB /* Shared (App) */,
+				B2C2F7C22EA2ACB90051EEFB /* Shared (Extension) */,
+				B2C2F7D32EA2ACB90051EEFB /* iOS (App) */,
+				B2C2F7E42EA2ACB90051EEFB /* macOS (App) */,
+				B2C2F7F22EA2ACB90051EEFB /* iOS (Extension) */,
+				B2C2F7FC2EA2ACB90051EEFB /* macOS (Extension) */,
+				B2C2F7D22EA2ACB90051EEFB /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B2C2F7D22EA2ACB90051EEFB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B2C2F7D12EA2ACB90051EEFB /* ipvfoo-safari.app */,
+				B2C2F7E32EA2ACB90051EEFB /* ipvfoo-safari.app */,
+				B2C2F7EE2EA2ACB90051EEFB /* ipvfoo-safari Extension.appex */,
+				B2C2F7F82EA2ACB90051EEFB /* ipvfoo-safari Extension.appex */,
+				B2C2F9032EA2ACB90051EEFB /* SafariResolverTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B2C2F7D02EA2ACB90051EEFB /* ipvfoo-safari (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B2C2F8222EA2ACB90051EEFB /* Build configuration list for PBXNativeTarget "ipvfoo-safari (iOS)" */;
+			buildPhases = (
+				B2C2F7CD2EA2ACB90051EEFB /* Sources */,
+				B2C2F7CE2EA2ACB90051EEFB /* Frameworks */,
+				B2C2F7CF2EA2ACB90051EEFB /* Resources */,
+				B2C2F8212EA2ACB90051EEFB /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B2C2F7F12EA2ACB90051EEFB /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				B2C2F7D32EA2ACB90051EEFB /* iOS (App) */,
+			);
+			name = "ipvfoo-safari (iOS)";
+			packageProductDependencies = (
+			);
+			productName = "ipvfoo-safari (iOS)";
+			productReference = B2C2F7D12EA2ACB90051EEFB /* ipvfoo-safari.app */;
+			productType = "com.apple.product-type.application";
+		};
+		B2C2F7E22EA2ACB90051EEFB /* ipvfoo-safari (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B2C2F82C2EA2ACB90051EEFB /* Build configuration list for PBXNativeTarget "ipvfoo-safari (macOS)" */;
+			buildPhases = (
+				B2C2F7DF2EA2ACB90051EEFB /* Sources */,
+				B2C2F7E02EA2ACB90051EEFB /* Frameworks */,
+				B2C2F7E12EA2ACB90051EEFB /* Resources */,
+				B2C2F82B2EA2ACB90051EEFB /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B2C2F7FB2EA2ACB90051EEFB /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				B2C2F7E42EA2ACB90051EEFB /* macOS (App) */,
+			);
+			name = "ipvfoo-safari (macOS)";
+			packageProductDependencies = (
+			);
+			productName = "ipvfoo-safari (macOS)";
+			productReference = B2C2F7E32EA2ACB90051EEFB /* ipvfoo-safari.app */;
+			productType = "com.apple.product-type.application";
+		};
+		B2C2F7ED2EA2ACB90051EEFB /* ipvfoo-safari Extension (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B2C2F81D2EA2ACB90051EEFB /* Build configuration list for PBXNativeTarget "ipvfoo-safari Extension (iOS)" */;
+			buildPhases = (
+				B2C2F7EA2EA2ACB90051EEFB /* Sources */,
+				B2C2F7EB2EA2ACB90051EEFB /* Frameworks */,
+				A43883AC2EA43A6900F64985 /* ShellScript */,
+				B2C2F7EC2EA2ACB90051EEFB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				B2C2F7F22EA2ACB90051EEFB /* iOS (Extension) */,
+			);
+			name = "ipvfoo-safari Extension (iOS)";
+			packageProductDependencies = (
+			);
+			productName = "ipvfoo-safari Extension (iOS)";
+			productReference = B2C2F7EE2EA2ACB90051EEFB /* ipvfoo-safari Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		B2C2F7F72EA2ACB90051EEFB /* ipvfoo-safari Extension (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B2C2F8272EA2ACB90051EEFB /* Build configuration list for PBXNativeTarget "ipvfoo-safari Extension (macOS)" */;
+			buildPhases = (
+				B2C2F7F42EA2ACB90051EEFB /* Sources */,
+				B2C2F7F52EA2ACB90051EEFB /* Frameworks */,
+				A43883412EA43A4100F64985 /* ShellScript */,
+				B2C2F7F62EA2ACB90051EEFB /* Resources */,
+				A43884172EA43A8F00F64985 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				B2C2F7FC2EA2ACB90051EEFB /* macOS (Extension) */,
+			);
+			name = "ipvfoo-safari Extension (macOS)";
+			packageProductDependencies = (
+			);
+			productName = "ipvfoo-safari Extension (macOS)";
+			productReference = B2C2F7F82EA2ACB90051EEFB /* ipvfoo-safari Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B2C2F7B52EA2ACB70051EEFB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					B2C2F7D02EA2ACB90051EEFB = {
+						CreatedOnToolsVersion = 26.0.1;
+					};
+					B2C2F7E22EA2ACB90051EEFB = {
+						CreatedOnToolsVersion = 26.0.1;
+					};
+					B2C2F7ED2EA2ACB90051EEFB = {
+						CreatedOnToolsVersion = 26.0.1;
+					};
+					B2C2F7F72EA2ACB90051EEFB = {
+						CreatedOnToolsVersion = 26.0.1;
+					};
+				};
+			};
+			buildConfigurationList = B2C2F7B82EA2ACB70051EEFB /* Build configuration list for PBXProject "ipvfoo-safari" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = B2C2F7B42EA2ACB70051EEFB;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = B2C2F7D22EA2ACB90051EEFB /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B2C2F7D02EA2ACB90051EEFB /* ipvfoo-safari (iOS) */,
+				B2C2F7E22EA2ACB90051EEFB /* ipvfoo-safari (macOS) */,
+				B2C2F7ED2EA2ACB90051EEFB /* ipvfoo-safari Extension (iOS) */,
+				B2C2F7F72EA2ACB90051EEFB /* ipvfoo-safari Extension (macOS) */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B2C2F7CF2EA2ACB90051EEFB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B2C2F7E12EA2ACB90051EEFB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B2C2F7EC2EA2ACB90051EEFB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B2C2F7F62EA2ACB90051EEFB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A43883412EA43A4100F64985 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/build_js.sh",
+			);
+			outputFileListPaths = (
+				"$(SRCROOT)/safari.xcfilelist",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ -n \"$SKIP_SCRIPT_PHASE\" ]; then\n  echo \"Skipping script phase.\"\nelse \n    chmod +x build_js.sh\n    ./build_js.sh\nfi\n\n\n";
+		};
+		A43883AC2EA43A6900F64985 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/build_js.sh",
+			);
+			outputFileListPaths = (
+				"$(SRCROOT)/safari.xcfilelist",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ -n \"$SKIP_SCRIPT_PHASE\" ]; then\n  echo \"Skipping script phase.\"\n  exit 0\nfi\n\nchmod +x build_js.sh\n./build_js.sh\n";
+		};
+		A43884172EA43A8F00F64985 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/open-safari-debugger.applescript",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n# ./open-safari-debugger.applescript\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B2C2F7CD2EA2ACB90051EEFB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B2C2F7DF2EA2ACB90051EEFB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B2C2F7EA2EA2ACB90051EEFB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B2C2F7F42EA2ACB90051EEFB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B2C2F7F12EA2ACB90051EEFB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B2C2F7ED2EA2ACB90051EEFB /* ipvfoo-safari Extension (iOS) */;
+			targetProxy = B2C2F7F02EA2ACB90051EEFB /* PBXContainerItemProxy */;
+		};
+		B2C2F7FB2EA2ACB90051EEFB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B2C2F7F72EA2ACB90051EEFB /* ipvfoo-safari Extension (macOS) */;
+			targetProxy = B2C2F7FA2EA2ACB90051EEFB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		B2C2F81E2EA2ACB90051EEFB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H3BMXM4W7H;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "ipvfoo-safari Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "io.goodkind.ipvfoo-safari.Extension";
+				PRODUCT_NAME = "ipvfoo-safari Extension";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B2C2F81F2EA2ACB90051EEFB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H3BMXM4W7H;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "ipvfoo-safari Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "io.goodkind.ipvfoo-safari.Extension";
+				PRODUCT_NAME = "ipvfoo-safari Extension";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B2C2F8232EA2ACB90051EEFB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H3BMXM4W7H;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "ipvfoo-safari";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "io.goodkind.ipvfoo-safari";
+				PRODUCT_NAME = "ipvfoo-safari";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B2C2F8242EA2ACB90051EEFB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H3BMXM4W7H;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "ipvfoo-safari";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "io.goodkind.ipvfoo-safari";
+				PRODUCT_NAME = "ipvfoo-safari";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B2C2F8282EA2ACB90051EEFB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "macOS (Extension)/ipvfoo-safari Extension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H3BMXM4W7H;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "ipvfoo-safari Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "io.goodkind.ipvfoo-safari.Extension";
+				PRODUCT_NAME = "ipvfoo-safari Extension";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		B2C2F8292EA2ACB90051EEFB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "macOS (Extension)/ipvfoo-safari Extension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H3BMXM4W7H;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "ipvfoo-safari Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "io.goodkind.ipvfoo-safari.Extension";
+				PRODUCT_NAME = "ipvfoo-safari Extension";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		B2C2F82D2EA2ACB90051EEFB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H3BMXM4W7H;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "ipvfoo-safari";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "io.goodkind.ipvfoo-safari";
+				PRODUCT_NAME = "ipvfoo-safari";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		B2C2F82E2EA2ACB90051EEFB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H3BMXM4W7H;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "ipvfoo-safari";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "io.goodkind.ipvfoo-safari";
+				PRODUCT_NAME = "ipvfoo-safari";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		B2C2F8312EA2ACB90051EEFB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = H3BMXM4W7H;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		B2C2F8322EA2ACB90051EEFB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = H3BMXM4W7H;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B2C2F7B82EA2ACB70051EEFB /* Build configuration list for PBXProject "ipvfoo-safari" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B2C2F8312EA2ACB90051EEFB /* Debug */,
+				B2C2F8322EA2ACB90051EEFB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B2C2F81D2EA2ACB90051EEFB /* Build configuration list for PBXNativeTarget "ipvfoo-safari Extension (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B2C2F81E2EA2ACB90051EEFB /* Debug */,
+				B2C2F81F2EA2ACB90051EEFB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B2C2F8222EA2ACB90051EEFB /* Build configuration list for PBXNativeTarget "ipvfoo-safari (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B2C2F8232EA2ACB90051EEFB /* Debug */,
+				B2C2F8242EA2ACB90051EEFB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B2C2F8272EA2ACB90051EEFB /* Build configuration list for PBXNativeTarget "ipvfoo-safari Extension (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B2C2F8282EA2ACB90051EEFB /* Debug */,
+				B2C2F8292EA2ACB90051EEFB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B2C2F82C2EA2ACB90051EEFB /* Build configuration list for PBXNativeTarget "ipvfoo-safari (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B2C2F82D2EA2ACB90051EEFB /* Debug */,
+				B2C2F82E2EA2ACB90051EEFB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B2C2F7B52EA2ACB70051EEFB /* Project object */;
+}
