@@ -29,7 +29,9 @@ https://microsoftedge.microsoft.com/addons/detail/ipvfoo/dphnkggpaicipkljebciobe
 
 IPvFoo cannot be [ported to Safari](https://github.com/pmarks-net/ipvfoo/issues/39) because the `webRequest` API does not report IP addresses.  In theory, a Safari extension could do its own DNS lookups over HTTPS, but such behavior is beyond the scope of IPvFoo.
 
-Feel free to give it a try, should also work on iOS, just run make safari-run-macos https://github.com/agoodkind/ipvfoo
+Feel free to give it a try, should also work on iOS, just run command: make safari-run-macos 
+<br>
+https://github.com/agoodkind/ipvfoo
 
 
 ## Running IPvFoo unpacked from git
